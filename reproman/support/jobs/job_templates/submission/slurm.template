@@ -1,7 +1,13 @@
 #!/bin/sh
 
+{% if launcher is defined and launcher == "true" %}
+#SBATCH --output={{ shlex_quote(_meta_directory) }}/stdout
+#SBATCH --error={{ shlex_quote(_meta_directory) }}/stderr
+{% else %}
 #SBATCH --output={{ shlex_quote(_meta_directory) }}/stdout.%a
 #SBATCH --error={{ shlex_quote(_meta_directory) }}/stderr.%a
+{% endif %}
+
 {#
   TODO: We need to assess how we treat batch parameters across different
   submitters---things like whether we should try to expose common names and, if
@@ -13,9 +19,22 @@
 {% if memory is defined %}
 #SBATCH --mem={{ memory }}
 {% endif %}
-{% if num_processes is defined %}
-#SBATCH --cpus-per-task={{ num_processes }}
+{% if num_nodes is defined %}
+#SBATCH --nodes={{ num_nodes }}
 {% endif %}
+{% if num_processes is defined %}
+#SBATCH --ntasks={{ num_processes }}
+{% endif %}
+{% if walltime is defined %}
+#SBATCH --time={{ walltime }}
+{% endif %}
+{% if queue is defined %}
+#SBATCH --partition={{ queue }}
+{% endif %}
+{% if launcher is defined and launcher == "true" %}
+
+{% include "launcher.template" %}
+{% else %}
 {% if _num_subjobs == 1 %}
 #SBATCH --array=0
 {% else %}
@@ -23,3 +42,4 @@
 {% endif %}
 
 {{ shlex_quote(_meta_directory) }}/runscript $SLURM_ARRAY_TASK_ID
+{% endif %}
