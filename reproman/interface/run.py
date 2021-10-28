@@ -206,9 +206,9 @@ JOB_PARAMETERS = collections.OrderedDict(
         as a job-array. See https://github.com/TACC/launcher for more info. 
         Supported by Slurm and PBS submitters."""),
         ("killjob_factors",
-         """(Format: "majority_factor,add_time_factor". A tool for ensuring that a 
+         """(Format: "threshold_factor,add_time_factor". A tool for ensuring that a 
         minority of sub-jobs don't run significantly longer than the majority, resulting
-         in wasted SUs. A timer starts when majority_factor * num_subjobs have ended.
+         in wasted SUs. A timer starts when threshold_factor * num_subjobs have ended.
         The remaining time is equal to elapsed_time * add_time_factor, after which the 
         job ends itself. Example: "killjob_factors=.75,.15" """),
     ]
