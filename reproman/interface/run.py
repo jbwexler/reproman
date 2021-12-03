@@ -199,7 +199,7 @@ JOB_PARAMETERS = collections.OrderedDict(
          """Supported by Condor and PBS submitters."""),
         ("num_nodes, walltime",
          """Supported by PBS submitter."""),
-        ("queue",
+        ("queue, job_name, mail_type, mail_user",
          """Supported by Slurm submitter."""),
         ("launcher",
          """If set to "true", the job will be run using Launcher, rather than 

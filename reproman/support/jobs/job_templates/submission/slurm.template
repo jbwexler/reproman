@@ -1,5 +1,14 @@
 #!/bin/sh
 
+{% if job_name is defined %}
+#SBATCH --job-name={{ job_name }}
+{% endif %}
+{% if mail_type is defined %}
+#SBATCH --mail-type={{ mail_type }}
+{% endif %}
+{% if mail_user is defined %}
+#SBATCH --mail-user={{ mail_user }}
+{% endif %}
 {% if launcher is defined and launcher == "true" %}
 #SBATCH --output={{ shlex_quote(_meta_directory) }}/stdout
 #SBATCH --error={{ shlex_quote(_meta_directory) }}/stderr
