@@ -1,6 +1,9 @@
 metadir={{ shlex_quote(_meta_directory) }}
 
 module load launcher
+module load remora
+module load ooops
+set_io_param_batch $SLURM_JOBID 0 low
 export LAUNCHER_JOB_FILE="$metadir/launcher"
 
 for task_id in $(seq 0 {{ _num_subjobs - 1}}); do
@@ -8,4 +11,4 @@ for task_id in $(seq 0 {{ _num_subjobs - 1}}); do
       "$task_id" "$task_id" "$task_id" >>"$LAUNCHER_JOB_FILE"
 done
 
-"$LAUNCHER_DIR"/paramrun
+remora "$LAUNCHER_DIR"/paramrun
