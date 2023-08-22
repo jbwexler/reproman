@@ -11,4 +11,16 @@ for task_id in $(seq 0 {{ _num_subjobs - 1}}); do
       "$task_id" "$task_id" "$task_id" >>"$LAUNCHER_JOB_FILE"
 done
 
+# Symlink containers annex to node tmp
+chmod -R 775 code/containers/.git/annex
+rm -rf code/containers/.git/annex
+ln -s /tmp/annexes/containers code/containers/.git/annex
+
+# Use cdtools to copy containers to node tmp
+CDTools=/home1/apps/CDTools/1.1
+export PATH=${PATH}:${CDTools}/bin
+distribute.bash ${STAGING}/annexes
+
+wait
+
 remora "$LAUNCHER_DIR"/paramrun
