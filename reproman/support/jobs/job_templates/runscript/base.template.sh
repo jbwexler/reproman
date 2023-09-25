@@ -29,6 +29,20 @@ get_command () {
 }
 
 cmd=$(get_command)
+work_dir_tmp_bind=$( echo "$cmd" | grep -o -P "(?<=-w ')[^']+(?=')" )
+work_dir_base=$(basename "$work_dir_tmp_bind")
+software=$(dirname "$work_dir_tmp_bind" | xargs basename)
+work_dir_scratch="$SCRATCH/work_dir/${software}/${work_dir_base}"
+work_dir_tmp="/tmp/work_dir/${software}/${work_dir_base}"
+walltime={{ walltime }}
+walltime_seconds=$(echo "$walltime" | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
+walltime_90p=$(printf "%.0f" $(echo "$walltime_seconds * 0.9 - 300" | bc))
+
+mkdir -p "/tmp/work_dir/${software}"
+if [[ -d "$work_dir_scratch" ]]; then
+	rsync -a "$work_dir_scratch" "$work_dir_tmp"
+fi
+
 if test -z "$cmd"
 then
     echo "[ReproMan] failed getting command at position $_reproman_cmd_idx" >&2
@@ -40,9 +54,9 @@ echo "running" >"$metadir/status.$subjob"
 echo "[ReproMan] executing command $cmd"
 echo "[ReproMan] ... within $PWD"
 {% block command %}
-/bin/sh -c "$cmd" && \
-    echo "succeeded" >"$metadir/status.$subjob" || \
-    (echo "failed: $?" >"$metadir/status.$subjob";
+timeout "${walltime_90p}"s --preserve-status /bin/sh -c "$cmd" && \
+    (rm -rf "$work_dir_tmp"; "succeeded" >"$metadir/status.$subjob") || \
+    (rsync -a --delete  "$work_dir_tmp" "$work_dir_scratch" ; echo "failed: $?" >"$metadir/status.$subjob";
      mkdir -p "$metadir/failed" && touch "$metadir/failed/$subjob")
 {% endblock %}
 

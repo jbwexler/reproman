@@ -6,6 +6,10 @@ module load ooops
 set_io_param_batch $SLURM_JOBID 0 low
 export LAUNCHER_JOB_FILE="$metadir/launcher"
 
+job_name={{ job_name }}
+software="${job_name#*-}"
+work_dir_scratch="$SCRATCH/work_dir/$software/"
+
 for task_id in $(seq 0 {{ _num_subjobs - 1}}); do
     printf "$metadir/runscript %d >$metadir/stdout.%d 2>$metadir/stderr.%d\n" \
       "$task_id" "$task_id" "$task_id" >>"$LAUNCHER_JOB_FILE"
