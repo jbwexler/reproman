@@ -40,7 +40,8 @@ walltime_90p=$(printf "%.0f" $(echo "$walltime_seconds * 0.9 - 300" | bc))
 
 mkdir -p "/tmp/work_dir/${software}"
 if [[ -d "$work_dir_scratch" ]]; then
-	rsync -a "$work_dir_scratch" "$work_dir_tmp"
+	echo "Copying existing work directory to /tmp/work_dir/${software}/"
+	rsync -a "$work_dir_scratch" "/tmp/work_dir/${software}/" && echo "Copy complete."
 fi
 
 if test -z "$cmd"
@@ -54,8 +55,8 @@ echo "running" >"$metadir/status.$subjob"
 echo "[ReproMan] executing command $cmd"
 echo "[ReproMan] ... within $PWD"
 {% block command %}
-timeout "${walltime_90p}"s --preserve-status /bin/sh -c "$cmd" && \
-    (rm -rf "$work_dir_tmp"; "succeeded" >"$metadir/status.$subjob") || \
+timeout --preserve-status "${walltime_90p}"s /bin/sh -c "$cmd" && \
+    (rm -rf "$work_dir_tmp"; echo "succeeded" >"$metadir/status.$subjob") || \
     (rsync -a --delete  "$work_dir_tmp" "$work_dir_scratch" ; echo "failed: $?" >"$metadir/status.$subjob";
      mkdir -p "$metadir/failed" && touch "$metadir/failed/$subjob")
 {% endblock %}

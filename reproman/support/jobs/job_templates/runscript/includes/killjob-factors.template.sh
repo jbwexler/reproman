@@ -46,8 +46,8 @@ if test $(nstatus) -eq 1; then
 		for d in "${work_dir_scratch}/${dataset}_*_0"; do
 			subdir_0=$(basename "$d")
 			subdir=$(echo "$subdir_0" | sed 's/_0//g')
-			mv "$subdir" "${subdir}_old"
-			mv "$subdir_0" "$subdir"
+			mv "$work_dir_scratch/$subdir" "$work_dir_scratch/${subdir}_old"
+			mv "$work_dir_scratch/$subdir_0" "$work_dir_scratch/$subdir"
 		done
 		scancel "$SLURM_JOB_ID"
 	fi
