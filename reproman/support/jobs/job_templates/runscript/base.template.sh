@@ -57,8 +57,9 @@ echo "[ReproMan] ... within $PWD"
 {% block command %}
 timeout --preserve-status "${walltime_90p}"s /bin/sh -c "$cmd" && \
     (rm -rf "$work_dir_tmp"; echo "succeeded" >"$metadir/status.$subjob") || \
-    (rsync -a --delete  "$work_dir_tmp" "$work_dir_scratch" ; echo "failed: $?" >"$metadir/status.$subjob";
-     mkdir -p "$metadir/failed" && touch "$metadir/failed/$subjob")
+    (rsync -a --delete  "$work_dir_tmp" "$work_dir_scratch" ; 
+	echo "failed: $?" >"$metadir/status.$subjob";
+	mkdir -p "$metadir/failed" && touch "$metadir/failed/$subjob")
 {% endblock %}
 
 {% if killjob_factors is defined %}

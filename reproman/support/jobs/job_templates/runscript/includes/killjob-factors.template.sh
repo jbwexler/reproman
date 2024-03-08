@@ -49,6 +49,8 @@ if test $(nstatus) -eq 1; then
 			mv "$work_dir_scratch/$subdir" "$work_dir_scratch/${subdir}_old"
 			mv "$work_dir_scratch/$subdir_0" "$work_dir_scratch/$subdir"
 		done
+		git -C "$workdir" annex add .
 		scancel "$SLURM_JOB_ID"
 	fi
+	git -C "$workdir" annex add .
 fi
