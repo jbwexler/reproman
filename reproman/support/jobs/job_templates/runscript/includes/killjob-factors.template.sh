@@ -48,9 +48,11 @@ if test $(nstatus) -eq 1; then
 			subdir=$(echo "$subdir_0" | sed 's/_0//g')
 			mv "$work_dir_scratch/$subdir" "$work_dir_scratch/${subdir}_old"
 			mv "$work_dir_scratch/$subdir_0" "$work_dir_scratch/$subdir"
+			rm -rf "$work_dir_scratch/${subdir}_old"
 		done
-		git -C "$workdir" annex add .
 		scancel "$SLURM_JOB_ID"
+	else
+		git -C "$workdir" annex add .
+		datalad save -d "$workdir" -m "post-job save"
 	fi
-	git -C "$workdir" annex add .
 fi
