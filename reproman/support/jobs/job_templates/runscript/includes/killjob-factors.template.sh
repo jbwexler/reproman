@@ -52,6 +52,6 @@ if test $(nstatus) -eq 1; then
 		done
 		scancel "$SLURM_JOB_ID"
 	else
-		git -C "$workdir" annex add . --exclude .reproman --exclude "remora_*" --exclude "code/*" --exclude sourcedata/raw --exclude sourcedata/templateflow
+		git -C "$workdir" annex add . --exclude ".reproman/*" --exclude "remora_*/*" --exclude "code/*" --exclude "sourcedata/raw/*" --exclude "sourcedata/templateflow/*"
 	fi
 fi
