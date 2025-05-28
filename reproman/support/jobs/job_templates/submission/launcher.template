@@ -1,6 +1,7 @@
 metadir={{ shlex_quote(_meta_directory) }}
 
 module load launcher
+module load impi/19.0.5
 module load remora
 module load ooops
 set_io_param_batch $SLURM_JOBID 0 low
